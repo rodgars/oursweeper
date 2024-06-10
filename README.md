@@ -172,6 +172,11 @@ Some enhancements to be made include:
 - Adding unit tests, as there are currently none.
 - Improving the UX by adding more navigation controls and displaying a list of events per user.
 - Integrating secret managers to prevent the leakage of keys and security values.
+- Handling reconnections in case the WebSocket connection fails on the frontend.
+- Investigating the use of Redis cache to store the game state for faster communication with the client. A method is needed to asynchronously sync cache data with the database.
+- Exploring the use of a NoSQL database, considering the high volume of write operations in this game scenario.
+- Improve the retry mechanism in Celery workers and enhance error handling in case of failures.
+- Remove the username prompt in the frontend and use an authentication provider instead.
 
 ## Built With
 
