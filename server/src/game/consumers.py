@@ -14,7 +14,6 @@ class GameConsumer(WebsocketConsumer):
         self.game_code = self.scope["url_route"]["kwargs"]["room_name"]
         self.group_name = f"game_{self.game_code}"
 
-        # Join room group
         async_to_sync(self.channel_layer.group_add)(self.group_name, self.channel_name)
 
         self.accept()
@@ -26,7 +25,6 @@ class GameConsumer(WebsocketConsumer):
             connected_users.append(self.user)
         cache.set(self.game_code, connected_users)
 
-        # Broadcast connected users list to group
         async_to_sync(self.channel_layer.group_send)(
             self.group_name, {"type": "user.list", "users": connected_users}
         )
@@ -38,17 +36,14 @@ class GameConsumer(WebsocketConsumer):
             connected_users.remove(user)
         cache.set(self.game_code, connected_users)
 
-        # Broadcast connected users list to group
         async_to_sync(self.channel_layer.group_send)(
             self.group_name, {"type": "user.list", "users": connected_users}
         )
 
-        # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name
         )
 
-    # Receive message from WebSocket
     def receive(self, text_data):
         error_message = None
 
@@ -61,7 +56,6 @@ class GameConsumer(WebsocketConsumer):
             error_message = {"error": "Missing required parameters"}
 
         if error_message:
-            # Send message to room group
             async_to_sync(self.channel_layer.group_send)(self.group_name, error_message)
             return
 
@@ -80,12 +74,12 @@ class GameConsumer(WebsocketConsumer):
             return
 
         # Convert datetime.datetime objects to strings
+        # This is necessary to avoid breaking on the channel
         game_map_state = {
             k: v.isoformat() if isinstance(v, datetime) else v
             for k, v in game_map_state.items()
         }
 
-        # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.group_name, {"type": "update.map", "map": game_map_state}
         )
