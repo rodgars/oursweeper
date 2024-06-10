@@ -1,0 +1,28 @@
+.userlist {
+	padding: 5px 10px;
+	margin-top: 20px;
+	font-weight: 400;
+	color: rgb(83, 83, 83);
+	border-radius: 5px;
+	align-self: center;
+	justify-content: center;
+	background-color: #cecece;
+}
+
+.userlist ul {
+	list-style-type: none; /* Remove bullet points */
+	margin: 0;
+	padding: 0;
+	display: table; /* Make the ul element behave like a table */
+	width: 100%; /* Full width */
+}
+
+.userlist li {
+	display: table-row; /* Make the li elements behave like table rows */
+	padding: 10px;
+	border-bottom: 1px solid #ddd; /* Add a border between rows */
+}
+
+.userlist li:nth-child(even) {
+	background-color: #f2f2f2; /* Add a background color to every other row */
+}
