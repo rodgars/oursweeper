@@ -1,0 +1,14 @@
+.cache
+.git
+.github
+.idea
+.pytest_cache
+deployment
+docs
+githooks
+mysql
+script
+venv
+*.venv
+**/*.pyc
+**/__pycache__

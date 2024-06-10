@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: myuser
+      POSTGRES_DB: oursweeper
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - published: 5448
+        target: 5432
+        mode: host
+    networks:
+      - local
+  redis:
+    image: redis:latest
+    ports:
+      - published: 6379
+        target: 6379
+        mode: host
+    networks:
+      - local
+  api:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./src:/app
+    ports:
+      - published: 5000
+        target: 8000
+        mode: host
+    depends_on:
+      - db
+    environment:
+      DATABASE_USER: myuser
+      DATABASE_PASSWORD: mypassword
+      DATABASE_NAME: oursweeper
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+    networks:
+      - local
+  worker:
+    build: .
+    command: celery -A base worker -l INFO
+    volumes:
+      - ./src:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      PYTHONPATH: /app/src
+      DATABASE_USER: myuser
+      DATABASE_PASSWORD: mypassword
+      DATABASE_NAME: oursweeper
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+    networks:
+      - local
+
+networks:
+  local:
+
+
+volumes:
+  pgdata:
