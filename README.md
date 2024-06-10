@@ -77,27 +77,31 @@ Visit http://localhost:3000 to start playing.
 
 After visiting http://localhost:3000, the land page of the game shows up.
 
--- Img here
+![Screenshot 2024-06-10 at 1 47 24 AM](https://github.com/rodgars/oursweeper/assets/20528688/f59f1f5f-339f-4b77-a0ce-12e96b349c3c)
 
 Select one level of dificulty by clicking on the respective button. In this example, let's click on Easy.
 
 It will create a game and redirect you to the game http://localhost:3000/game/xxxxx
 
-First time, it prompts to you to inform an username. This feature is just to help identify who played what move in a game with more players. Since there is no authentication the game is storing this username is your browser localstorage.
+First time, it prompts to you to inform an username. This feature is just to help identifing which player did what move in a game with more players. Since there is no authentication the game is storing this username in your browser localstorage.
 
--- Img here
+![Screenshot 2024-06-10 at 1 48 46 AM](https://github.com/rodgars/oursweeper/assets/20528688/1a697cea-c709-458a-8b5f-6f7b567bf63b)
 
 After prompting the username, you can play the game.
 
--- Img here
+![Screenshot 2024-06-10 at 1 48 58 AM](https://github.com/rodgars/oursweeper/assets/20528688/02cba52b-e53c-41fa-9f82-5d100af8c981)
 
-You can leave the game and be back to this url whenever you want. The game state is persisted in the backend.
+You can leave the game and be back to this url whenever you want. The game state is persisted in the backend to avoid cheating.
 
 To simulate more people playing the game, open an Incognito browser and enter a different username. Now you can play together.
 
+![Screenshot 2024-06-10 at 1 49 47 AM](https://github.com/rodgars/oursweeper/assets/20528688/ccf93592-b598-46bb-88ff-c1e8897dadaf)
+
+![Screenshot 2024-06-10 at 1 50 24 AM](https://github.com/rodgars/oursweeper/assets/20528688/fff6fcb0-815b-46b6-ac52-8f1b1be9b777)
+
 Video demo:
 
--- Video here
+[-- Video here](https://github.com/rodgars/oursweeper/assets/20528688/a2101fc1-d16c-453d-97cb-d5c5111a143a)
 
 To generate another game, you have to manually go back to http://localhost:3000.
 
@@ -141,22 +145,33 @@ to format the code
 
 ## Architecture
 
-TODO
+The project incorporates two main backend approaches: HTTP and WebSockets.
+
+For certain features, such as creating a new game, communication between the web client and web server uses simple HTTP, where the client sends a POST request to the server, which then executes commands on the database. This represents a synchronous flow.
+
+Conversely, more complex methods are used to allow multiple users to play a game simultaneously.
+
+Below is the flow when a user clicks on a cell. This sequence diagram simplifies the process slightly.
+
+This diagram illustrates a single client sending a message, but all clients connected to the same channel group will receive an updated game map.
+
+![Screenshot 2024-06-10 at 2 06 43 AM](https://github.com/rodgars/oursweeper/assets/20528688/6b92112e-3d41-4bf7-9a08-ac07ae5d51d6)
+
 
 ## Limitations
 
-This is just an example, this app is not Production Ready.
+This is just an example; this app is not production-ready.
 
-It requires a lot of improvements and better set up.
+It requires significant improvements and better setup.
 
-Some enhancements to be done:
+Some enhancements to be made include:
 
-- Refactoring sync code to be async in backend to leverage all advantages of ASGI.
-- Use Redis cache to store connected users in a distributed way. The current version is using the memory of the web server instance (which works fine for testing since there is just one instance).
-- Also use Channels Redis to store the channels and groups in Redis.
-- Adding unit tests. There is none
-- Improve UX, but adding more navigation controls and show list of events by user.
-- Integrate secret managers for prevent leaking keys and security values
+- Refactoring synchronous code to be asynchronous in the backend to fully leverage ASGI benefits.
+- Using Redis cache to store connected users in a distributed manner. The current version uses the web server instance's memory, which is adequate for testing with a single instance.
+- Utilizing Channels Redis to store channels and groups in Redis.
+- Adding unit tests, as there are currently none.
+- Improving the UX by adding more navigation controls and displaying a list of events per user.
+- Integrating secret managers to prevent the leakage of keys and security values.
 
 ## Built With
 
